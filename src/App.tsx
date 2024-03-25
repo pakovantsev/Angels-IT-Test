@@ -11,6 +11,7 @@ import "leaflet/dist/leaflet.css";
 
 const customIcon = new Icon({
   iconUrl: require("./img/marker.png"),
+  iconAnchor: [17.5, 35],
   iconSize: [35, 35]
 });
 
