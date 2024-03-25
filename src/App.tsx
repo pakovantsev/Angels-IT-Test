@@ -3,8 +3,9 @@ import { MapContainer, Marker, Polyline, /**Popup, */TileLayer } from "react-lea
 import { Icon } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { getRoadCenter } from "./service";
+import { Road } from "./types";
 import Drawer from "./components/Drawer/Drawer";
-import useApp from "./useApp";
+import data from "./data/roads.json";
 
 import "leaflet/dist/leaflet.css";
 
@@ -14,13 +15,27 @@ const customIcon = new Icon({
 });
 
 function App() {
-  const {
-    selectedRoad,
-    closeDrawer,
-    openDrawer,
-    roads,
-    open
-  } = useApp();
+  const [roads, setRoads] = React.useState<Road[]>();
+
+  React.useEffect(() => {
+    setRoads((data as Road[]).map((road) => ({
+      ...road,
+      coordinates: road.coordinates.map(v => v.map((coordinates: number[]) => [coordinates[1], coordinates[0]]))
+    })));
+  }, [setRoads]);
+
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [selectedRoad, setSelectedRoad] = React.useState<Road | null>(null);
+
+  function openDrawer(road: Road) {
+    setSelectedRoad(road);
+    setOpen(true);
+  }
+
+  function closeDrawer() {
+    setOpen(false);
+    setSelectedRoad(null);
+  }
 
   return (
     <div>
